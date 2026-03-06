@@ -30,14 +30,18 @@
     .layout { display: grid; grid-template-columns: auto 220px; gap: 18px; align-items: start; }
     canvas { background: #0a0f1f; border: 1px solid #32406b; border-radius: 10px; display:block; }
     .panel { border: 1px solid #2a3357; border-radius: 10px; padding: 12px; background:#0d1427; }
-    .panel h3 { margin: 0 0 10px; font-size: 16px; }
-    .meta { margin: 8px 0; color:#d6ddff; }
-    .keys { font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .panel h3 { margin: 0 0 8px; font-size: 14px; }
+    .meta { margin: 6px 0; color:#d6ddff; font-size:14px; }
+    .keys { font-size: 12px; color: var(--muted); line-height: 1.45; }
     button {
-      width: 100%; margin-top: 10px; border: 0; border-radius: 8px;
-      padding: 9px 10px; font-weight: 700; cursor: pointer;
+      width: 100%; margin-top: 8px; border: 0; border-radius: 8px;
+      padding: 8px 10px; font-weight: 700; cursor: pointer;
       background: #5eead4; color:#03261f;
     }
+    .controls { margin-top:10px; display:grid; gap:8px; }
+    .row { display:grid; grid-template-columns: repeat(3,1fr); gap:8px; }
+    .ctl { border:1px solid #2b3a5f; background:#1b2846; color:#dbeafe; padding:8px; border-radius:8px; font-weight:700; cursor:pointer; }
+    .ctl:active { transform: scale(0.98); }
     @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -47,7 +51,7 @@
     <p class="sub">built with openclaw + jungbong · 테트리스 추가 버전</p>
 
     <div class="layout">
-      <canvas id="game" width="300" height="600" aria-label="Tetris game canvas"></canvas>
+      <canvas id="game" width="210" height="420" aria-label="Tetris game canvas"></canvas>
 
       <div class="panel">
         <h3>🎮 Tetris</h3>
@@ -55,6 +59,18 @@
         <div class="meta">레벨: <strong id="level">1</strong></div>
         <div class="meta">줄: <strong id="lines">0</strong></div>
         <button id="restart">새 게임</button>
+        <div class="controls">
+          <div class="row">
+            <button class="ctl" id="btn-rot">회전</button>
+            <button class="ctl" id="btn-up">▲</button>
+            <button class="ctl" id="btn-drop">하드드롭</button>
+          </div>
+          <div class="row">
+            <button class="ctl" id="btn-left">◀</button>
+            <button class="ctl" id="btn-down">▼</button>
+            <button class="ctl" id="btn-right">▶</button>
+          </div>
+        </div>
         <p class="keys">
           ←/→ 이동<br/>
           ↓ 빠르게 내리기<br/>
@@ -68,7 +84,7 @@
   </div>
 
   <script>
-    const COLS = 10, ROWS = 20, BLOCK = 30;
+    const COLS = 10, ROWS = 20, BLOCK = 21;
     const EMPTY = 0;
 
     const COLORS = [
@@ -308,6 +324,20 @@
     });
 
     restartBtn.addEventListener('click', () => resetState());
+
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnDown = document.getElementById('btn-down');
+    const btnUp = document.getElementById('btn-up');
+    const btnRot = document.getElementById('btn-rot');
+    const btnDrop = document.getElementById('btn-drop');
+
+    btnLeft?.addEventListener('click', () => { move(-1); draw(); });
+    btnRight?.addEventListener('click', () => { move(1); draw(); });
+    btnDown?.addEventListener('click', () => { softDrop(); draw(); });
+    btnUp?.addEventListener('click', () => { rotatePiece(1); draw(); });
+    btnRot?.addEventListener('click', () => { rotatePiece(1); draw(); });
+    btnDrop?.addEventListener('click', () => { hardDrop(); draw(); });
 
     resetState();
     update();
